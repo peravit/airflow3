@@ -12,6 +12,7 @@ dags/__pycache__/
 plugins/__pycache__/
 
 # Environment
+.env
 .env.local
 .env.production
 
@@ -29,3 +30,6 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# Config files with secrets
+config/
