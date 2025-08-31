@@ -69,7 +69,7 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-apache-airflow-providers-microsoft-mssql==3.7.0 pyodbc==5.1.0 pymssql==2.3.0}
     # The following line can be used to set a custom config file, stored in the local config folder
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
   volumes:
@@ -331,5 +331,47 @@ services:
       airflow-init:
         condition: service_completed_successfully
 
+  # MSSQL Source Database (for ETL demo)
+  mssql-source:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql-source-data:/var/opt/mssql
+      - ./sql/init-source.sql:/docker-entrypoint-initdb.d/init-source.sql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  # MSSQL Target Database (for ETL demo) - # remove this when prod
+  mssql-target: # remove this when prod
+    image: mcr.microsoft.com/mssql/server:2022-latest # remove this when prod
+    environment: # remove this when prod
+      SA_PASSWORD: "YourStrong@Passw0rd" # remove this when prod
+      ACCEPT_EULA: "Y" # remove this when prod
+      MSSQL_PID: "Express" # remove this when prod
+    ports: # remove this when prod
+      - "1434:1433" # remove this when prod
+    volumes: # remove this when prod
+      - mssql-target-data:/var/opt/mssql # remove this when prod
+      - ./sql/init-target.sql:/docker-entrypoint-initdb.d/init-target.sql # remove this when prod
+    healthcheck: # remove this when prod
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q 'SELECT 1'"] # remove this when prod
+      interval: 30s # remove this when prod
+      timeout: 10s # remove this when prod
+      retries: 5 # remove this when prod
+      start_period: 30s # remove this when prod
+    restart: always # remove this when prod
+
 volumes:
   postgres-db-volume:
+  mssql-source-data:
+  mssql-target-data: # remove this when prod
