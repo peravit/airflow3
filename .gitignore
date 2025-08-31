@@ -1,0 +1,31 @@
+# Airflow logs
+logs/
+airflow-logs/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dags/__pycache__/
+plugins/__pycache__/
+
+# Environment
+.env.local
+.env.production
+
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

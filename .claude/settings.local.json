@@ -2,7 +2,12 @@
   "permissions": {
     "allow": [
       "Bash(mkdir:*)",
-      "Bash(docker-compose:*)"
+      "Bash(docker-compose:*)",
+      "WebFetch(domain:airflow.apache.org)",
+      "Bash(curl:*)",
+      "Bash(mv:*)",
+      "Bash(docker compose:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": [],
